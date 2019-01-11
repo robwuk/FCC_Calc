@@ -4,6 +4,8 @@
   var decimal = false;
 
   function clearData() {
+    equals = false;
+    decimal = false;
     lastAction = "0";
     allActions.length = 0;
 
@@ -42,7 +44,6 @@
       let value1 = allActions[0];
       let operator = allActions[1];
       let value2 = allActions[2];
-
 
       value1 =  getResult(parseFloat(value1), operator, parseFloat(value2));
 
