@@ -6,6 +6,7 @@
 
 body {
   background-image: url("desktop.jpg");
+  background-size: cover;
 }
 
 
