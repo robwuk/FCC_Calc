@@ -45,13 +45,31 @@
       let operator = allActions[1];
       let value2 = allActions[2];
 
+      if (isOperator(value1)) { //if first character is + or - then we need to operate that on 0
+        value2 = operator;
+        operator = value1;
+        value1 = 0;
+      }
+
       value1 =  getResult(parseFloat(value1), operator, parseFloat(value2));
 
-      for (let i = 3; i< allActions.length; i+=2) {
-        if (allActions.length - i >= 2) {
-          operator = allActions[i];
-          value2 = allActions[i+1];
-          value1 = getResult(parseFloat(value1), operator, parseFloat(value2));
+      for (let i = 3; i< allActions.length; i++) {
+        switch (isOperator(allActions[i])) {
+          case false:
+            operator = allActions[i-1];
+            value2 = allActions[i];
+            value1 = getResult(parseFloat(value1), operator, parseFloat(value2));
+            break;
+          case true:
+            if (!isOperator(allActions[i+1])) {
+              operator = allActions[i];
+              console.log(operator);
+              i++;
+              value2 = allActions[i];
+              console.log(value2);
+              value1 = getResult(parseFloat(value1), operator, parseFloat(value2));
+            }
+            break;
         }
       }
 
@@ -78,20 +96,33 @@
   }
 
   function buttonPress(value){
-
+    console.log(value);
     switch (value) {
       case "+": case "-": case "/": case "*":
-        if (equals) {
+        if (equals) { //respond if the last action was the = sign//
+          console.log("here " + equals);
           allActions.length = 0;
           allActions.push(lastAction);
+          lastAction = value;
+          allActions.push(lastAction);
+        } else if (allActions.length === 0) { //prevent first character of an equation being * or ? => not mathematically correct//
+          if (value === "+" || value === "-") {
+            allActions.push(value);
+            lastAction = value;
+          }
+        } else if (isOperator(allActions[allActions.length-1])){
+          allActions[allActions.length-1] = value;
+          lastAction = value;
+        } else {
+          allActions.push(value);
+          lastAction = value;
         }
-        allActions.push(value);
-        lastAction = value;
         equals = false;
         decimal = false;
         break;
       case "=":
         equals = true;
+        console.log(equals);
         calculateSum();
         decimal = false;
         break;
